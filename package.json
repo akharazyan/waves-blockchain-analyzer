@@ -1,0 +1,29 @@
+{
+    "name": "waves-blockchain-analyzer",
+    "version": "1.0.0",
+    "description": "",
+    "main": "build/index.js",
+    "scripts": {
+        "start": "NODE_ENV=development nodemon --inspect=10002 src/index.ts",
+        "start:prod": "NODE_ENV=production nodemon --inspect=10002 src/index.ts",
+        "build": "tsc",
+        "generate-bu-types": "proto-loader-gen-types -I=node_modules/@waves/protobuf-serialization/proto -O=src/metal/proto --keepCase=true --longs=String --enums=String --grpcLib=@grpc/grpc-js node_modules/@waves/protobuf-serialization/proto/waves/events/grpc/blockchain_updates.proto",
+        "generate-aa-types": "proto-loader-gen-types -I=node_modules/@waves/protobuf-serialization/proto -O=src/metal/proto --keepCase=true --longs=String --enums=String --grpcLib=@grpc/grpc-js node_modules/@waves/protobuf-serialization/proto/waves/node/grpc/accounts_api.proto"
+    },
+    "author": "Aram Kharazian",
+    "license": "ISC",
+    "dependencies": {
+        "@grpc/grpc-js": "^1.6.7",
+        "@grpc/proto-loader": "^0.6.12",
+        "@waves/protobuf-serialization": "^1.4.1-beta.2",
+        "@waves/ts-lib-crypto": "^1.4.4-beta.1",
+        "bs58": "^5.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^16.6.2",
+        "nodemon": "^2.0.15",
+        "prettier": "^2.5.1",
+        "ts-node": "^10.2.0",
+        "typescript": "^4.9.4"
+    }
+}

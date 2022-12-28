@@ -1,0 +1,7 @@
+*.yml
+*.chunk.css
+*.chunk.js
+bundle.js
+webpack*.js
+*.html
+*.svg

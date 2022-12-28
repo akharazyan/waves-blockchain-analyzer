@@ -1,0 +1,10 @@
+{
+    "restartable": "rs",
+    "ignore": [".git", "node_modules/", "dist/", "coverage/"],
+    "watch": ["*.ts"],
+    "execMap": {
+        "#ts": "TS_NODE_FILES=true node --trace-deprecation --abort-on-uncaught-exception -r ts-node/register",
+        "ts": "TS_NODE_FILES=true node -r ts-node/register"
+    },
+    "ext": "js,json,ts"
+}
