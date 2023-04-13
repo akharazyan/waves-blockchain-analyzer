@@ -1,32 +1,63 @@
-import BlockchainUpdatesStreamListener from '../services/grpc/BlockchainUpdatesStreamListener';
+import {BlockchainUpdates} from 'waves-grpc-services-client';
+
 import type { BlockchainUpdated } from '../types/proto/waves/events/BlockchainUpdated';
 import { convertTransactions } from '../domain/converters';
 import { log } from '../services/logger';
 
-const grpcStreamListener = new BlockchainUpdatesStreamListener('MAIN');
+
+const updatesListenerBuilder = BlockchainUpdates.builder().label('MAIN');
 
 let i = 0;
+let start;
+let bu;
 
 const processUpdate = async (value: BlockchainUpdated): Promise<void> => {
-    if (i === 0) {
-        log(value.height);
-    }
     if (i++ === 100) {
-        i = 0;
+        i = 1;
     }
+    if (i === 1) {
+        console.timeLog('sync', value.height);
+    }
+
+    if (value.height === 3598714) {
+        console.timeEnd('sync');
+        console.log('took:', (Date.now() - start) / 1000 / 60, 'min');
+        bu.stop();
+    }
+    return;
 
     if (value.update === 'append') {
         const { transactions, tokens } = convertTransactions(value);
-        for (const transaction of transactions) {
-            //            if (transaction.id === '7XHFnzXJwXwG2TGKgLR7mSB43D2HC46gazyRxYqd9fk2') {
-            //                log({ transaction: transaction.id });
-            //            }
+        for (const index in transactions) {
+            const transaction = transactions[index];
+            
+            
+            if (transaction.sender === '3PCzWbccmGJmky2FrMaFc9524YFX1xK3B6V') {
+                log({
+                    transaction,
+                    raw: {
+                        meta: value.append.transactions_metadata[index],
+                        state: value.append.transaction_state_updates[index],
+                    },
+                });
+            }
+            
+//            if (transaction.invokeMethod?.functionName === 'finishRebirth') {
+//                log({
+//                    transaction,
+//                    raw: {
+//                        meta: value.append.transactions_metadata[index],
+//                        state: value.append.transaction_state_updates[index],
+//                    },
+//                });
+//            }
         }
     }
 };
 
-export const startSync = ({ since, until }: { since: number; until?: number }) => {
-    grpcStreamListener.from(since).to(until).onData(processUpdate).start();
-
-    return grpcStreamListener;
+export const startSync = async ({ since, until }: { since: number; until?: number }) => {
+    start = Date.now();
+    console.time('sync');
+    bu = updatesListenerBuilder.from(since).to(until).onData(processUpdate).build();
+    await bu.start();
 };

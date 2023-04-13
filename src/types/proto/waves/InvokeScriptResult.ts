@@ -3,7 +3,7 @@
 import type {
     _waves_DataTransactionData_DataEntry,
     _waves_DataTransactionData_DataEntry__Output,
-} from './DataTransactionData';
+} from '../waves/DataTransactionData';
 import type { Amount as _waves_Amount, Amount__Output as _waves_Amount__Output } from '../waves/Amount';
 import type { Recipient as _waves_Recipient, Recipient__Output as _waves_Recipient__Output } from '../waves/Recipient';
 import type {
@@ -17,8 +17,9 @@ export interface _waves_InvokeScriptResult_Call_Argument {
     binary_value?: Buffer | Uint8Array | string;
     string_value?: string;
     boolean_value?: boolean;
+    case_obj?: Buffer | Uint8Array | string;
     list?: _waves_InvokeScriptResult_Call_Argument_List | null;
-    value?: 'integer_value' | 'binary_value' | 'string_value' | 'boolean_value' | 'list';
+    value?: 'integer_value' | 'binary_value' | 'string_value' | 'boolean_value' | 'case_obj' | 'list';
 }
 
 export interface _waves_InvokeScriptResult_Call_Argument__Output {
@@ -26,6 +27,7 @@ export interface _waves_InvokeScriptResult_Call_Argument__Output {
     binary_value?: Buffer;
     string_value?: string;
     boolean_value?: boolean;
+    case_obj?: Buffer;
     list?: _waves_InvokeScriptResult_Call_Argument_List__Output;
 }
 

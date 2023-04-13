@@ -1,6 +1,9 @@
 // Original file: node_modules/@waves/protobuf-serialization/proto/waves/events/events.proto
 
-import type { _waves_events_StateUpdate_AssetInfo, _waves_events_StateUpdate_AssetInfo__Output } from './StateUpdate';
+import type {
+    _waves_events_StateUpdate_AssetInfo,
+    _waves_events_StateUpdate_AssetInfo__Output,
+} from '../../waves/events/StateUpdate';
 import type {
     TransactionMetadata as _waves_events_TransactionMetadata,
     TransactionMetadata__Output as _waves_events_TransactionMetadata__Output,

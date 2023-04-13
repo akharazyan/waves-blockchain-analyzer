@@ -87,5 +87,7 @@ export interface ParsedTransaction {
     timestamp?: Date;
     invokeMethod?: InvokeMethod;
     stateUpdates: ParsedStateUpdate;
+    sender: string;
+    type: string;
     //    tokensTransfers: ITokensTransfers;
 }

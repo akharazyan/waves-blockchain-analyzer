@@ -1,5 +1,5 @@
 import type { Long } from '@grpc/proto-loader';
-import { base58Encode } from '@waves/ts-lib-crypto';
+import { address, base58Encode } from '@waves/ts-lib-crypto';
 
 import type { StateUpdate } from '../types/proto/waves/events/StateUpdate';
 import type { TransactionMetadata } from '../types/proto/waves/events/TransactionMetadata';
@@ -55,8 +55,6 @@ export const valueFromDataEntry = (
         type: 'string',
     };
 };
-
-export const getNumberValue = (entry: DataEntryUpdate): number | undefined => (entry ? Number(entry.value) : undefined);
 
 const convertAssetId = (assetId?: Buffer | Uint8Array | string | null) =>
     !assetId || assetId.length === 0 ? null : base58Encode(assetId);
@@ -117,7 +115,7 @@ const convertAssetDetails = (assetDetails: _waves_events_StateUpdate_AssetDetail
         name: assetDetails.name,
         decimals: assetDetails.decimals,
         description: assetDetails.description,
-        issuer: base58Encode(assetDetails.issuer),
+        issuer: address({ publicKey: base58Encode(assetDetails.issuer) }),
         lastUpdatedHeight: assetDetails.last_updated,
         volume: Number(assetDetails.volume),
     };
@@ -147,15 +145,13 @@ const convertStateUpdate = (stateUpdate: StateUpdate): ParsedStateUpdate => ({
 });
 
 const getTransactionTimestamp = (event: BlockchainUpdated, transactionIndex: number): number => {
-    const { body, block, micro_block } = event.append;
+    const { body, block, micro_block, transactions_metadata } = event.append;
+    const { transactions } = body === 'micro_block' ? micro_block.micro_block.micro_block : block.block;
+    const { transaction, waves_transaction } = transactions[transactionIndex];
 
-    if (body === 'micro_block') {
-        return parseInt(
-            micro_block.micro_block.micro_block.transactions[transactionIndex].waves_transaction.timestamp.toString(),
-        );
-    }
-
-    return parseInt(block.block.transactions[transactionIndex].waves_transaction.timestamp.toString());
+    return transaction === 'waves_transaction'
+        ? parseInt(waves_transaction.timestamp.toString())
+        : parseInt(transactions_metadata[transactionIndex].ethereum.timestamp.toString());
 };
 
 export const convertTransactions = (
@@ -176,11 +172,14 @@ export const convertTransactions = (
 
     const transactions = update.transaction_ids.map((transaction_id, i) => {
         const id = base58Encode(transaction_id);
-        const { metadata: txType } = update.transactions_metadata[i];
+        const { metadata: txType, sender_address } = update.transactions_metadata[i];
+        const sender = base58Encode(sender_address);
 
         if (['ethereum', 'lease'].includes(txType)) {
             return {
                 id,
+                type: txType,
+                sender,
                 //                nftsTransfers: new TokensTransfers([]),
                 stateUpdates: {
                     assets: [],
@@ -197,6 +196,8 @@ export const convertTransactions = (
         if (['mass_transfer', 'exchange'].includes(txType)) {
             return {
                 id,
+                type: txType,
+                sender,
                 //                nftsTransfers: new TokensTransfers([]),
                 stateUpdates,
                 timestamp,
@@ -206,6 +207,8 @@ export const convertTransactions = (
 
         return {
             id,
+            type: txType,
+            sender,
             invokeMethod: convertInvoke(update.transactions_metadata[i]),
             //            nftsTransfers: new TokensTransfers(stateUpdates.balances),
             stateUpdates,

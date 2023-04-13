@@ -4,7 +4,7 @@ import type { Amount as _waves_Amount, Amount__Output as _waves_Amount__Output }
 import type {
     _waves_DataTransactionData_DataEntry,
     _waves_DataTransactionData_DataEntry__Output,
-} from '../DataTransactionData';
+} from '../../waves/DataTransactionData';
 import type { Long } from '@grpc/proto-loader';
 
 export interface _waves_events_StateUpdate_AssetDetails {

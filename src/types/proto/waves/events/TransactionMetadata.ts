@@ -3,7 +3,7 @@
 import type {
     _waves_InvokeScriptResult_Call_Argument,
     _waves_InvokeScriptResult_Call_Argument__Output,
-} from '../InvokeScriptResult';
+} from '../../waves/InvokeScriptResult';
 import type { Amount as _waves_Amount, Amount__Output as _waves_Amount__Output } from '../../waves/Amount';
 import type {
     InvokeScriptResult as _waves_InvokeScriptResult,
@@ -29,24 +29,42 @@ export interface _waves_events_TransactionMetadata_InvokeScriptMetadata_Argument
 }
 
 export interface _waves_events_TransactionMetadata_EthereumMetadata {
-    sender_address?: Buffer | Uint8Array | string;
-    transfer?: _waves_events_TransactionMetadata_TransferMetadata | null;
+    timestamp?: number | string | Long;
+    fee?: number | string | Long;
+    sender_public_key?: Buffer | Uint8Array | string;
+    transfer?: _waves_events_TransactionMetadata_EthereumTransferMetadata | null;
     invoke?: _waves_events_TransactionMetadata_InvokeScriptMetadata | null;
     Action?: 'transfer' | 'invoke';
 }
 
 export interface _waves_events_TransactionMetadata_EthereumMetadata__Output {
-    sender_address?: Buffer;
-    transfer?: _waves_events_TransactionMetadata_TransferMetadata__Output;
+    timestamp?: string;
+    fee?: string;
+    sender_public_key?: Buffer;
+    transfer?: _waves_events_TransactionMetadata_EthereumTransferMetadata__Output;
     invoke?: _waves_events_TransactionMetadata_InvokeScriptMetadata__Output;
+}
+
+export interface _waves_events_TransactionMetadata_EthereumTransferMetadata {
+    recipient_address?: Buffer | Uint8Array | string;
+    amount?: _waves_Amount | null;
+}
+
+export interface _waves_events_TransactionMetadata_EthereumTransferMetadata__Output {
+    recipient_address?: Buffer;
+    amount?: _waves_Amount__Output;
 }
 
 export interface _waves_events_TransactionMetadata_ExchangeMetadata {
     order_ids?: (Buffer | Uint8Array | string)[];
+    order_sender_addresses?: (Buffer | Uint8Array | string)[];
+    order_sender_public_keys?: (Buffer | Uint8Array | string)[];
 }
 
 export interface _waves_events_TransactionMetadata_ExchangeMetadata__Output {
     order_ids?: Buffer[];
+    order_sender_addresses?: Buffer[];
+    order_sender_public_keys?: Buffer[];
 }
 
 export interface _waves_events_TransactionMetadata_InvokeScriptMetadata {
@@ -55,7 +73,6 @@ export interface _waves_events_TransactionMetadata_InvokeScriptMetadata {
     arguments?: _waves_InvokeScriptResult_Call_Argument[];
     payments?: _waves_Amount[];
     result?: _waves_InvokeScriptResult | null;
-    sender_address?: Buffer | Uint8Array | string;
 }
 
 export interface _waves_events_TransactionMetadata_InvokeScriptMetadata__Output {
@@ -64,7 +81,6 @@ export interface _waves_events_TransactionMetadata_InvokeScriptMetadata__Output 
     arguments?: _waves_InvokeScriptResult_Call_Argument__Output[];
     payments?: _waves_Amount__Output[];
     result?: _waves_InvokeScriptResult__Output;
-    sender_address?: Buffer;
 }
 
 export interface _waves_events_TransactionMetadata_LeaseMetadata {
@@ -100,6 +116,7 @@ export interface _waves_events_TransactionMetadata_TransferMetadata__Output {
 }
 
 export interface TransactionMetadata {
+    sender_address?: Buffer | Uint8Array | string;
     transfer?: _waves_events_TransactionMetadata_TransferMetadata | null;
     exchange?: _waves_events_TransactionMetadata_ExchangeMetadata | null;
     mass_transfer?: _waves_events_TransactionMetadata_MassTransferMetadata | null;
@@ -110,6 +127,7 @@ export interface TransactionMetadata {
 }
 
 export interface TransactionMetadata__Output {
+    sender_address?: Buffer;
     transfer?: _waves_events_TransactionMetadata_TransferMetadata__Output;
     exchange?: _waves_events_TransactionMetadata_ExchangeMetadata__Output;
     mass_transfer?: _waves_events_TransactionMetadata_MassTransferMetadata__Output;

@@ -6,6 +6,14 @@ import type { Long } from '@grpc/proto-loader';
 
 // Original file: node_modules/@waves/protobuf-serialization/proto/waves/order.proto
 
+export enum _waves_Order_PriceMode {
+    DEFAULT = 0,
+    FIXED_DECIMALS = 1,
+    ASSET_DECIMALS = 2,
+}
+
+// Original file: node_modules/@waves/protobuf-serialization/proto/waves/order.proto
+
 export enum _waves_Order_Side {
     BUY = 0,
     SELL = 1,
@@ -25,6 +33,8 @@ export interface Order {
     version?: number;
     proofs?: (Buffer | Uint8Array | string)[];
     eip712_signature?: Buffer | Uint8Array | string;
+    price_mode?: _waves_Order_PriceMode | keyof typeof _waves_Order_PriceMode;
+    sender?: 'sender_public_key' | 'eip712_signature';
 }
 
 export interface Order__Output {
@@ -41,4 +51,5 @@ export interface Order__Output {
     version?: number;
     proofs?: Buffer[];
     eip712_signature?: Buffer;
+    price_mode?: keyof typeof _waves_Order_PriceMode;
 }
